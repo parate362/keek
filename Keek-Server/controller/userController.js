@@ -1,10 +1,10 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
+const express = require('express');
+const bcrypt = require('bcryptjs');
 const User = require("../model/User");
 const VerificationToken = require("../model/verificationToken");
 const { sendError } = require("../utils/helper");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+require('dotenv').config();
 
 const {
   generateOTP,
@@ -12,29 +12,27 @@ const {
   generateEmailTemplate,
 } = require("../utils/mail");
 // const client = require('twilio')(process.env.accountSid, process.env.authToken);
-const twilio = require("twilio");
+const twilio = require('twilio');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 
 // Check if environment variables are loaded correctly
 if (!accountSid || !authToken) {
-  throw new Error(
-    "TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN must be set in the environment variables."
-  );
+  throw new Error("TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN must be set in the environment variables.");
 }
 
 const client = new twilio(accountSid, authToken);
 
-// For debugging: Check if the environment variables are correct
-console.log("Account SID:", accountSid);
-console.log("Auth Token:", authToken);
+
+
+
 
 exports.SendOTPToMobile = async (req, res) => {
   const otp = generateOTP();
   const hash = await bcrypt.hash(otp, 8);
 
   try {
-    console.log(req.body, "--- body ----");
+    console.log(req.body, '--- body ----');
     const sendOtp = await client.messages.create({
       body: `Your OTP for Keek is ${otp}`,
       to: `+91${req.body.mobileNumber}`, // Text this number
@@ -45,67 +43,68 @@ exports.SendOTPToMobile = async (req, res) => {
       return res.send({
         status: true,
         statuscode: 201,
-        message: "OTP sent successfully",
+        message: 'OTP sent successfully'
       });
     } else {
       return res.send({
         status: false,
         statuscode: 422,
-        message: "Something went wrong!",
+        message: 'Something went wrong!'
       });
     }
   } catch (error) {
-    console.log(error, "---- error 194 ---");
+    console.log(error, '---- error 194 ---');
     return res.send({
       status: false,
       statuscode: 500,
-      message: "Something went wrong!",
+      message: 'Something went wrong!'
     });
   }
 };
 
-exports.VerifyMobileOTP = async (req, res) => {
+exports.VerifyMobileOTP = async(req, res) => {
   const { mobile, otp } = req.body;
-  const user = await User.findOne({ mobile });
+    const user = await User.findOne({ mobile });
+  
+    if (!user) {
+      return res.status(400).send('Invalid OTP');
+    }
 
-  if (!user) {
-    return res.status(400).send("Invalid OTP");
-  }
+    user.verified = true;
+    await user.save();
+  
+    res.status(200).send('User verified');
+}
 
-  user.verified = true;
-  await user.save();
-
-  res.status(200).send("User verified");
-};
-
-exports.signUpWithMobile = async (req, res) => {
-  const { name, mobile, password } = req.body;
-
+exports.signUpWithMobile = async(req, res) => {
+  const { name, mobile, password} = req.body;
+  
   // Check if the user already exists
   let user = await User.findOne({ mobile });
   if (!user) {
-    return res.status(400).send("User not found. Please request OTP first.");
+    return res.status(400).send('User not found. Please request OTP first.');
   }
 
   if (!user.verified) {
-    return res
-      .status(400)
-      .send("User not verified. Please verify your OTP first.");
+    return res.status(400).send('User not verified. Please verify your OTP first.');
   }
 
+  
   // Update user with password
   user.password = password; // Password will be hashed in the pre-save hook
   user.name = name;
   await user.save();
 
-  res.status(200).send("Signup successful. You can now log in.");
-};
+  res.status(200).send('Signup successful. You can now log in.');
+}
 
 exports.sendOtp = async (req, res) => {
   const { email } = req.body;
 
   const otp = generateOTP();
   const hash = await bcrypt.hash(otp, 8);
+  
+ 
 
   const mailOptions = {
     from: "your-email@gmail.com",
@@ -119,7 +118,7 @@ exports.sendOtp = async (req, res) => {
       return res.status(500).json({ error: "Failed to send OTP" });
     } else {
       const verificationToken = new VerificationToken({
-        email: email,
+        email:  email,
         token: otp,
       });
       await verificationToken.save();
@@ -132,53 +131,74 @@ exports.createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const user = await User.findOne({ email });
-    if (user) {
-      return res.send({
-        status: false,
-        statuscode: 402,
-        message: "User email already exists!",
-      });
-    }
-    const addUser = await userModel.create(req.body);
-    if (addUser) {
-      return res.send({
-        status: true,
-        statuscode: 201,
-        message: "User registered successfully.",
-        data: addUser,
-      });
-    } else {
-      return res.send({
-        status: false,
-        statuscode: 422,
-        message: "Something went wrong!",
-      });
-    }
-  } catch (error) {
-    console.log(error, "---- log 227 ----");
-    return res.send({
-      status: false,
-      statuscode: 500,
-      message: "Something went wrong!",
+    if (user) return sendError(res, "This email is already in use!" );
+  
+    const newUser = new User({
+      name,
+      email,
+      password,
     });
-  }
+
+    newUser.save();
+
+    return sendError(res,(newUser))
+  } 
+  catch (err) {
+    return sendError(res, "Internal server error")
+  }
 };
 
-exports.signInWithMobile = async (req, res) => {
+// exports.createUser = async(req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
+//     const user = await User.findOne({ email });
+//     if(user) {
+//       return res.send({
+//         status: false,
+//         statuscode: 402,
+//         message: 'User email already exists!'
+//       })
+//     }
+//      const addUser = await User.create(req.body)
+//      if(addUser){
+//       return res.send({
+//         status: true,
+//         statuscode: 201,
+//         message: 'User registered successfully.',
+//         data: addUser
+//       })
+//      }else{
+//       return res.send({
+//         status: false,
+//         statuscode: 422,
+//         message: 'Something went wrong!'
+//        })
+//      }
+//   } catch (error) {
+//     console.log(error, '---- log 227 ----');
+//     return res.send({
+//       status: false,
+//       statuscode: 500,
+//       message: 'Something went wrong!'
+//      })
+//   }
+// }
+
+exports.signInWithMobile = async(req, res) => {
   const { mobileNumber, password } = req.body;
-  const user = await User.findOne({ mobileNumber, isVerified: true });
-
-  if (!user) {
-    return res.status(400).send("Invalid credentials");
-  }
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return res.status(400).send("Invalid credentials");
-  }
-
-  res.status(200).send("Login successful");
-};
+    const user = await User.findOne({ mobileNumber, isVerified: true });
+  
+    if (!user) {
+      return res.status(400).send('Invalid credentials');
+    }
+  
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).send('Invalid credentials');
+    }
+  
+    res.status(200).send('Login successful');
+}
 
 // exports.signInWithEmail = async (req, res) => {
 //   const { email, password } = req.body;
@@ -254,6 +274,7 @@ exports.verifyEmail = async (req, res) => {
   res.json({
     success: true,
     messege: "your email is verified",
+    
   });
 };
 
