@@ -18,10 +18,5 @@ app.use(
 
 app.use("/api/user", userRouter);
 
-app.get("/", (req, res) => {
-  app.use(express.static(path.resolve(__dirname, "Keek-Project", "build")));
-  res.sendFile(path.resolve(__dirname, "Keek-Project", "build", "index.html"));
-  });
-
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listen on port${port}...`));
