@@ -131,60 +131,39 @@ exports.createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const user = await User.findOne({ email });
-    if (user) return sendError(res, "This email is already in use!" );
-  
-    const newUser = new User({
-      name,
-      email,
-      password,
+    if (user) {
+      return res.send({
+        status: false,
+        statuscode: 402,
+        message: "User email already exists!",
+      });
+    }
+    const addUser = await userModel.create(req.body);
+    if (addUser) {
+      return res.send({
+        status: true,
+        statuscode: 201,
+        message: "User registered successfully.",
+        data: addUser,
+      });
+    } else {
+      return res.send({
+        status: false,
+        statuscode: 422,
+        message: "Something went wrong!",
+      });
+    }
+  } catch (error) {
+    console.log(error, "---- log 227 ----");
+    return res.send({
+      status: false,
+      statuscode: 500,
+      message: "Something went wrong!",
     });
-
-    newUser.save();
-
-    return sendError(res,(newUser))
-  } 
-  catch (err) {
-    return sendError(res, "Internal server error")
-  }
+  }
 };
 
-// exports.createUser = async(req, res) => {
-//   try {
-//     const { name, email, password } = req.body;
-//     const user = await User.findOne({ email });
-//     if(user) {
-//       return res.send({
-//         status: false,
-//         statuscode: 402,
-//         message: 'User email already exists!'
-//       })
-//     }
-//      const addUser = await User.create(req.body)
-//      if(addUser){
-//       return res.send({
-//         status: true,
-//         statuscode: 201,
-//         message: 'User registered successfully.',
-//         data: addUser
-//       })
-//      }else{
-//       return res.send({
-//         status: false,
-//         statuscode: 422,
-//         message: 'Something went wrong!'
-//        })
-//      }
-//   } catch (error) {
-//     console.log(error, '---- log 227 ----');
-//     return res.send({
-//       status: false,
-//       statuscode: 500,
-//       message: 'Something went wrong!'
-//      })
-//   }
-// }
-
-exports.signInWithMobile = async(req, res) => {
+exports.signInWithMobile = async (req, res) => {
   const { mobileNumber, password } = req.body;
     const user = await User.findOne({ mobileNumber, isVerified: true });
   
