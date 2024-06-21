@@ -1,32 +1,111 @@
-const User = require("../model/User");
+const express = require("express");
 const bcrypt = require("bcrypt");
+const User = require("../model/User");
 const VerificationToken = require("../model/verificationToken");
 const { sendError } = require("../utils/helper");
 const jwt = require("jsonwebtoken");
-require("dotenv").config()
+require("dotenv").config();
+
 const {
   generateOTP,
   mailTransport,
   generateEmailTemplate,
 } = require("../utils/mail");
 // const client = require('twilio')(process.env.accountSid, process.env.authToken);
-const twilio = require('twilio');
-const accountSid = process.env.accountSid; // Your Account SID from www.twilio.com/console
-const authToken = process.env.authToken; // Your Auth Token from www.twilio.com/console
-const client = new twilio(accountSid, authToken);
+const twilio = require("twilio");
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 
+// Check if environment variables are loaded correctly
+if (!accountSid || !authToken) {
+  throw new Error(
+    "TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN must be set in the environment variables."
+  );
+}
 
-// console.log(process.env.accountSid);
-// console.log(process.env.authToken);
+const client = new twilio(accountSid, authToken);
 
+// For debugging: Check if the environment variables are correct
+console.log("Account SID:", accountSid);
+console.log("Auth Token:", authToken);
+
+exports.SendOTPToMobile = async (req, res) => {
+  const otp = generateOTP();
+  const hash = await bcrypt.hash(otp, 8);
+
+  try {
+    console.log(req.body, "--- body ----");
+    const sendOtp = await client.messages.create({
+      body: `Your OTP for Keek is ${otp}`,
+      to: `+91${req.body.mobileNumber}`, // Text this number
+      from: process.env.TWILIO_PHONE_NUMBER, // From a valid Twilio number
+    });
+
+    if (sendOtp) {
+      return res.send({
+        status: true,
+        statuscode: 201,
+        message: "OTP sent successfully",
+      });
+    } else {
+      return res.send({
+        status: false,
+        statuscode: 422,
+        message: "Something went wrong!",
+      });
+    }
+  } catch (error) {
+    console.log(error, "---- error 194 ---");
+    return res.send({
+      status: false,
+      statuscode: 500,
+      message: "Something went wrong!",
+    });
+  }
+};
+
+exports.VerifyMobileOTP = async (req, res) => {
+  const { mobile, otp } = req.body;
+  const user = await User.findOne({ mobile });
+
+  if (!user) {
+    return res.status(400).send("Invalid OTP");
+  }
+
+  user.verified = true;
+  await user.save();
+
+  res.status(200).send("User verified");
+};
+
+exports.signUpWithMobile = async (req, res) => {
+  const { name, mobile, password } = req.body;
+
+  // Check if the user already exists
+  let user = await User.findOne({ mobile });
+  if (!user) {
+    return res.status(400).send("User not found. Please request OTP first.");
+  }
+
+  if (!user.verified) {
+    return res
+      .status(400)
+      .send("User not verified. Please verify your OTP first.");
+  }
+
+  // Update user with password
+  user.password = password; // Password will be hashed in the pre-save hook
+  user.name = name;
+  await user.save();
+
+  res.status(200).send("Signup successful. You can now log in.");
+};
 
 exports.sendOtp = async (req, res) => {
   const { email } = req.body;
 
   const otp = generateOTP();
   const hash = await bcrypt.hash(otp, 8);
-  
- 
 
   const mailOptions = {
     from: "your-email@gmail.com",
@@ -39,13 +118,8 @@ exports.sendOtp = async (req, res) => {
     if (error) {
       return res.status(500).json({ error: "Failed to send OTP" });
     } else {
-      // const userId = new ObjectId(ownerId)
-
-      // console.log(typeof(userId));
-      // console.log(userId);
-
       const verificationToken = new VerificationToken({
-        email:  email,
+        email: email,
         token: otp,
       });
       await verificationToken.save();
@@ -54,187 +128,57 @@ exports.sendOtp = async (req, res) => {
   });
 };
 
-exports.SendOTPToMobile = async(req, res) => {
-  try {
-    console.log(req.body, '--- body ----');
-
-const sendOtp = client.messages
-  .create({
-    body: 'Hello from Node',
-    to: req.body.mobileNumber, // Text this number
-    from: process.env.twilioNumber, // From a valid Twilio number
-  })
-  if(sendOtp){
-    return res.send({
-      status: true,
-      statuscode: 201,
-      message: 'OTP sent successfully'
-    })
-  }else{
-    return res.send({
-      status: false,
-      statuscode: 422,
-      message: 'Something went wrong!'
-     })
-  }
-    
-  } catch (error) {
-    console.log(error, '---- error 194 ---');
-     return res.send({
-      status: false,
-      statuscode: 500,
-      message: 'Something went wrong!'
-     })
-  }
-}
-
-// exports.SendOTPToMobile = async(req, res) => {
-//   const { mobileNumber } = req.body;
-  
-  
-//   const otp = generateOTP();
-//   const otpExpiry = Date.now() + 5 * 60 * 1000; // 5 minutes from now
-
-//   let user = await User.findOne({ mobile });
-//   if(!user){
-//     user = new User({ mobile });
-//   }
- 
-//   await user.save();
-
-//   // Send OTP via SMS using Twilio
-//   client.messages.create({
-//       body: `Your OTP for Keek is ${otp}`,
-//       from: process.env.twilioNumber,
-//       to: `+91${mobileNumber}`, // Replace with recipient's phone number and country code
-//     })
-//     if (error) {
-//       return res.status(500).json({ error: "Failed to send OTP" });
-//     } else {
-//       // const userId = new ObjectId(ownerId)
-
-//       // console.log(typeof(userId));
-//       // console.log(userId);
-
-//       const verificationToken = new VerificationToken({
-//         mobileNumber:  mobileNumber,
-//         token: otp,
-//       });
-//       await verificationToken.save();
-//       res.status(200).send({ message: "OTP sent" });
-//     }
-
-  //   .then((message) => res.send(message.sid))
-  //   .catch((error) => res.send(error));
-
-  // res.status(200).send('OTP sent');
-// }
-
-// exports.SendOTPToMobile = async(req, res) => {
-//   const { mobileNumber } = req.body;
-  
-// try {
-//     const otp = generateOTP();
-//     const hash = await bcrypt.hash(otp, 8);
-//     const otpExpiry = Date.now() + 5 * 60 * 1000; // 5 minutes from now
-
-//     // let user = await User.findOne({ mobile });
-//     // if (!user) {
-//     //   user = new User({ mobile });
-//     // }
-
-//     // mobile.otpHash = hash;
-//     // mobile.otpExpiry = otpExpiry;
-   
-
-//     // Send OTP via SMS using Twilio
-//     console.log(process.env.TWILIO_PHONE_NUMBER);
-//     client.messages.create({
-    
-//       body: `Your OTP for Keek is ${otp}`,
-//       from: process.env.TWILIO_PHONE_NUMBER,
-//       to: `+91${mobileNumber}`, // Replace with recipient's phone number and country code
-//     });
-
-//     res.status(200).json({ message: 'OTP sent' });
-//   } catch (error) {
-//     console.error('Error sending OTP:', error);
-//     res.status(500).json({ message: 'Error sending OTP', error: error.message });
-//   }
-// }
-
-exports.VerifyMobileOTP = async(req, res) => {
-  const { mobile, otp } = req.body;
-    const user = await User.findOne({ mobile });
-  
-    if (!user) {
-      return res.status(400).send('Invalid OTP');
-    }
-
-    user.verified = true;
-    await user.save();
-  
-    res.status(200).send('User verified');
-}
-
-exports.signUpWithMobile = async(req, res) => {
-  const { name, mobile, password} = req.body;
-  
-  // Check if the user already exists
-  let user = await User.findOne({ mobile });
-  if (!user) {
-    return res.status(400).send('User not found. Please request OTP first.');
-  }
-
-  if (!user.verified) {
-    return res.status(400).send('User not verified. Please verify your OTP first.');
-  }
-
-  
-  // Update user with password
-  user.password = password; // Password will be hashed in the pre-save hook
-  user.name = name;
-  await user.save();
-
-  res.status(200).send('Signup successful. You can now log in.');
-}
-
 exports.createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const user = await User.findOne({ email });
-    if (user) return sendError(res, "This email is already in use!" );
-  
-    const newUser = new User({
-      name,
-      email,
-      password,
+    if (user) {
+      return res.send({
+        status: false,
+        statuscode: 402,
+        message: "User email already exists!",
+      });
+    }
+    const addUser = await userModel.create(req.body);
+    if (addUser) {
+      return res.send({
+        status: true,
+        statuscode: 201,
+        message: "User registered successfully.",
+        data: addUser,
+      });
+    } else {
+      return res.send({
+        status: false,
+        statuscode: 422,
+        message: "Something went wrong!",
+      });
+    }
+  } catch (error) {
+    console.log(error, "---- log 227 ----");
+    return res.send({
+      status: false,
+      statuscode: 500,
+      message: "Something went wrong!",
     });
-
-    newUser.save();
-
-    return sendError(res,(newUser))
-  } 
-  catch (err) {
-    return sendError(res, "Internal server error")
   }
 };
 
-exports.signInWithMobile = async(req, res) => {
+exports.signInWithMobile = async (req, res) => {
   const { mobileNumber, password } = req.body;
-    const user = await User.findOne({ mobileNumber, isVerified: true });
-  
-    if (!user) {
-      return res.status(400).send('Invalid credentials');
-    }
-  
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).send('Invalid credentials');
-    }
-  
-    res.status(200).send('Login successful');
-}
+  const user = await User.findOne({ mobileNumber, isVerified: true });
+
+  if (!user) {
+    return res.status(400).send("Invalid credentials");
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.status(400).send("Invalid credentials");
+  }
+
+  res.status(200).send("Login successful");
+};
 
 // exports.signInWithEmail = async (req, res) => {
 //   const { email, password } = req.body;
@@ -310,7 +254,6 @@ exports.verifyEmail = async (req, res) => {
   res.json({
     success: true,
     messege: "your email is verified",
-    
   });
 };
 

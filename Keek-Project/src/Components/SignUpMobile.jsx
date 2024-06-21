@@ -28,7 +28,7 @@ const SignUpMobile = () => {
 
   const sendOtp = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/user/sendmobile-otp', {
+      const response = await fetch(`${window.location.origin}/api/user/sendmobile-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const SignUpMobile = () => {
   const verifyOtp = async () => {
    
     try {
-      const response = await fetch('http://localhost:8080/api/user/verify-otp', {
+      const response = await fetch(`${window.location.origin}/api/user/verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
