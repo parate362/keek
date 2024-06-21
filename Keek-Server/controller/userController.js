@@ -25,9 +25,6 @@ if (!accountSid || !authToken) {
 
 const client = new twilio(accountSid, authToken);
 
-// For debugging: Check if the environment variables are correct
-console.log("Account SID:", accountSid);
-console.log("Auth Token:", authToken);
 
 exports.SendOTPToMobile = async (req, res) => {
   const otp = generateOTP();
@@ -132,38 +129,22 @@ exports.createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const user = await User.findOne({ email });
-    if (user) {
-      return res.send({
-        status: false,
-        statuscode: 402,
-        message: "User email already exists!",
-      });
-    }
-    const addUser = await userModel.create(req.body);
-    if (addUser) {
-      return res.send({
-        status: true,
-        statuscode: 201,
-        message: "User registered successfully.",
-        data: addUser,
-      });
-    } else {
-      return res.send({
-        status: false,
-        statuscode: 422,
-        message: "Something went wrong!",
-      });
-    }
-  } catch (error) {
-    console.log(error, "---- log 227 ----");
-    return res.send({
-      status: false,
-      statuscode: 500,
-      message: "Something went wrong!",
+    if (user) return sendError(res, "This email is already in use!" );
+  
+    const newUser = new User({
+      name,
+      email,
+      password,
     });
-  }
-};
 
+    newUser.save();
+
+    return sendError(res,(newUser))
+  } 
+  catch (err) {
+    return sendError(res, "Internal server error")
+  }
+};
 exports.signInWithMobile = async (req, res) => {
   const { mobileNumber, password } = req.body;
   const user = await User.findOne({ mobileNumber, isVerified: true });
