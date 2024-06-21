@@ -131,22 +131,43 @@ exports.createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const user = await User.findOne({ email });
-    if (user) return sendError(res, "This email is already in use!" );
-  
+
+    if (user) {
+      return res.status(402).send({
+        status: false,
+        statuscode: 402,
+        message: "User email already exists!",
+      });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = new User({
       name,
       email,
-      password,
+      password: hashedPassword,
     });
 
-    newUser.save();
+    await newUser.save();
 
-    return sendError(res,(newUser))
-  } 
-  catch (err) {
-    return sendError(res, "Internal server error")
+    return res.status(201).send({
+      status: true,
+      statuscode: 201,
+      message: "User registered successfully.",
+      data: newUser,
+    });
+  } catch (error) {
+    console.log(error, "---- log 227 ----");
+    return res.status(500).send({
+      status: false,
+      statuscode: 500,
+      message: "Something went wrong!",
+    });
   }
-};exports.signInWithMobile = async (req, res) => {
+};
+
+exports.signInWithMobile = async (req, res) => {
   const { mobileNumber, password } = req.body;
     const user = await User.findOne({ mobileNumber, isVerified: true });
   
