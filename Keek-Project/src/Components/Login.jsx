@@ -35,7 +35,7 @@ const Login = () => {
   //     setError('Sign up failed. Please try again.');
   //     console.log(err);
   //   });
-    axios.post(`${window.location.origin}/api/user/signin-email`, {email, password })
+    axios.post(`https://keek-server.vercel.app/api/user/signin-email`, {email, password })
       .then((result) => {
         console.log(result);
         if (result.data === "Success") {

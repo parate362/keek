@@ -97,7 +97,7 @@ const SignUp = () => {
 
   const sendOtp = async () => {
     try {
-      const response = await fetch(`${window.location.origin}/api/user/send-otp`, {
+      const response = await fetch(`https://keek-server.vercel.app/api/user/send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ const SignUp = () => {
   const verifyOtp = async () => {
    
     try {
-      const response = await fetch(`${window.location.origin}/api/user/verify-email`, {
+      const response = await fetch(`https://keek-server.vercel.app/api/user/verify-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
