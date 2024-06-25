@@ -253,12 +253,6 @@ exports.verifyEmail = async (req, res) => {
     subject: "Wekcome To Keek",
     html: "<h1>Email Verified Successfully</h1>",
   });
-
-  res.json({
-    success: true,
-    messege: "your email is verified",
-    
-  });
 };
 
 // exports.verifyEmail = async (req, res) => {
