@@ -6,6 +6,7 @@ import { CiMail } from "react-icons/ci";
 import { IoEyeOutline } from "react-icons/io5";
 import { BsEyeSlash } from "react-icons/bs";
 import { Key } from "@mui/icons-material";
+import { Button} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import LoginCarousel from "../Components/LoginSignUpPage/LoginCarousel/LoginCarousel";
 
@@ -71,7 +72,7 @@ const Login = () => {
           </h1>
           <h2 className="mt-4 font-bold">Welcome Back!</h2>
           <h2 className="opacity-75 mb-4">Please enter your credentials</h2>
-          <button className="w-full border rounded-md my-2 py-2 active:bg-blue-600 active:text-white">
+          {/* <button className="w-full border rounded-md my-2 py-2 active:bg-blue-600 active:text-white">
             <FcGoogle className="inline-block text-[20px]" /> Continue with
             google
           </button>
@@ -80,9 +81,29 @@ const Login = () => {
               <FaMobileAlt className="inline-block mx-2 text-lg opacity-50" />
               Continue with mobile number
             </button>
-          </Link>
+          </Link> */}
+         <div className="flex flex-col space-y-4 mb-1">
+      <Button
+        variant="outlined"
+        className="flex items-center justify-center w-full text-sm lowercase"
+        startIcon={<FcGoogle />}
+        style={{ color: 'black', border: '1px solid lightgrey', textTransform: 'none' }}
+      >
+        Continue with google
+      </Button>
+      <Link to={"/SignUp_Mobile"}>
+      <Button
+        variant="outlined"
+        className="flex items-center justify-center w-full text-sm lowercase"
+        startIcon={<FaMobileAlt style={{ color: "grey" }} />}
+        style={{ color: 'black', border: '1px solid lightgrey', textTransform: 'none' }}
+      >
+        Continue with mobile number
+      </Button>
+      </Link>
+    </div>
           <div className="flex text-sm items-center opacity-50">
-            <hr className="w-1/2" /> <span className="p-4">OR</span>
+            <hr className="w-1/2" /> <span className="p-1">OR</span>
             <hr className="w-1/2" />
           </div>
           <form onSubmit={handleSubmit}>
