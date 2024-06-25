@@ -16,6 +16,10 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.send("Hello Keek!");
+});
+
 app.use("/api/user", userRouter);
 
 const port = process.env.PORT || 8080;
