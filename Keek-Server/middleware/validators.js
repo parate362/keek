@@ -10,11 +10,11 @@ exports.validateUser= [
     .normalizeEmail()
     .isEmail()
     .withMessage('Email is invalid!'),
-    check('mobile')
-    .trim()
-    .not()
-    .isEmpty()
-    .withMessage("Number is missing!"),
+    // check('mobile')
+    // .trim()
+    // .not()
+    // .isEmpty()
+    // .withMessage("Number is missing!"),
     check('password')
     .trim()
     .not()

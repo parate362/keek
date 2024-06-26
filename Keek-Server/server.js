@@ -10,11 +10,18 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "https://keek-nine.vercel.app",
+    origin: "http://localhost:3000",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
+    allowedHeaders: 'Content-Type,Authorization',
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   })
 );
+
+app.get("/", (req, res) => {
+  res.send("Hello Keek!");
+});
 
 app.use("/api/user", userRouter);
 

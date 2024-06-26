@@ -15,6 +15,7 @@ const Routing = () => {
         <Route path="/sign_up" element={<SignUp/>} />
         <Route path="/*" element={<h1>error 404</h1>} />
         <Route path="/Login_Mobile" element={<LoginMobile />} />
+        <Route index element={<Login />} />
         <Route path="/SignUp_Mobile" element={<SignUpMobile />} />
       </Routes>
     </>

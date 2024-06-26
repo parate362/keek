@@ -97,7 +97,7 @@ const SignUp = () => {
 
   const sendOtp = async () => {
     try {
-      const response = await fetch(`https://keek-server.vercel.app/api/user/send-otp`, {
+      const response = await fetch(`http://localhost:8080/api/user/send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ const SignUp = () => {
   const verifyOtp = async () => {
    
     try {
-      const response = await fetch(`https://keek-server.vercel.app/api/user/verify-email`, {
+      const response = await fetch(`http://localhost:8080/api/user/verify-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,26 +202,23 @@ const SignUp = () => {
 
     //   return;
     // }
-    const updatedFormData = { ...formData };
-    updatedFormData.isSubmitting = true; 
-    setFormData(updatedFormData);
+    // const updatedFormData = { ...formData };
+    // updatedFormData.isSubmitting = true; 
+    // setFormData(updatedFormData);
     
-  
-      axios.post("http://localhost:8080/api/user/register-email", formData )
-        .then((formData) => {
-          setSuccess('Sign up successful!');
-          setError('');
-          navigate("/");
-          setTimeout(() => {
-            setSuccess("");
-          }, 2000);
-        
-        }
-      )
-        .catch((err) => {
-          setError('Sign up failed. Please try again.');
-          console.log(err);
-        });
+    axios.post("http://localhost:8080/api/user/register-email", formData)
+      .then((response) => {
+        setSuccess('Sign up successful!');
+        setError('');
+        navigate("/");
+        setTimeout(() => {
+          setSuccess("");
+        }, 2000);
+      })
+      .catch((err) => {
+        setError('Sign up failed. Please try again.');
+        console.log(err);
+      });
      
 
   setFormData({
