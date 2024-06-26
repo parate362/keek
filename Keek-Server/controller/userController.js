@@ -23,7 +23,12 @@ if (!accountSid || !authToken) {
   );
 }
 
-const client = new twilio(accountSid, authToken);
+// console.log(accountSid);
+// console.log(authToken);
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+// const client = new twilio(accountSid, authToken);
+
+
 
 exports.SendOTPToMobile = async (req, res) => {
   const otp = generateOTP();
@@ -31,9 +36,10 @@ exports.SendOTPToMobile = async (req, res) => {
 
   try {
     console.log(req.body, "--- body ----");
+    const phone = Number(req.body.mobileNumber);
     const sendOtp = await client.messages.create({
       body: `Your OTP for Keek is ${otp}`,
-      to: `+91${req.body.mobileNumber}`, // Text this number
+      to: `+91${phone}`, // Text this number
       from: process.env.TWILIO_PHONE_NUMBER, // From a valid Twilio number
     });
 
@@ -60,6 +66,7 @@ exports.SendOTPToMobile = async (req, res) => {
   }
 };
 
+
 exports.VerifyMobileOTP = async (req, res) => {
   const { mobile, otp } = req.body;
   const user = await User.findOne({ mobile });
@@ -75,7 +82,7 @@ exports.VerifyMobileOTP = async (req, res) => {
 };
 
 exports.signUpWithMobile = async (req, res) => {
-  const { name, mobile, password } = req.body;
+  const { name, mobile } = req.body;
 
   // Check if the user already exists
   let user = await User.findOne({ mobile });
@@ -127,6 +134,7 @@ exports.sendOtp = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    console.log(req.body, "---- log 205 ----");
     const user = await User.findOne({ email });
 
     if (user) {
@@ -138,16 +146,16 @@ exports.createUser = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       name,
       email,
-      password: hashedPassword,
+      password,
     });
 
     await newUser.save();
-    newUser.varified = true;
+   
 
     return res.status(201).send({
       status: true,
@@ -204,6 +212,7 @@ exports.signInWithMobile = async (req, res) => {
 
 exports.signin = async (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body);
   if (!email.trim() || !password.trim())
     return sendError(res, "email/password is missing!");
 

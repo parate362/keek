@@ -114,6 +114,9 @@ const SignUp = () => {
       }
     } catch (error) {
       setError('Error sending OTP');
+      setTimeout(() => {
+        setError('');
+      }, 2000); 
     }
   };
 
@@ -192,16 +195,16 @@ const SignUp = () => {
       return;
     }
 
-    // if (!isVerified) {
-    //   setError("Please verify OTP first.");
-    //   setSuccess("");
+    if (!isVerified) {
+      setError("Please verify OTP first.");
+      setSuccess("");
 
-    //   setTimeout(() => {
-    //     setError("");
-    //   }, 2000);
+      setTimeout(() => {
+        setError("");
+      }, 2000);
 
-    //   return;
-    // }
+      return;
+    }
     // const updatedFormData = { ...formData };
     // updatedFormData.isSubmitting = true; 
     // setFormData(updatedFormData);
@@ -243,31 +246,31 @@ const SignUp = () => {
         <LoginCarousel slides={slides} autoSlide={true} />
       </div>
       <div className="w-full md:w-[61%] p-8">
-        <h2 className="text-5xl font-bold mb-4 text-left text-blue-600 font-serif">
+        <h2 className="text-5xl font-bold mb-2 text-left text-blue-600 font-serif">
           Keek
         </h2>
-        <div className="flex flex-col space-y-4 mb-4">
-          <Button
-            variant="outlined"
-            className="flex items-center justify-center w-full"
-            startIcon={<FcGoogle />}
-            style={{ color: "black", border: "1px solid lightgrey" }}
-          >
-            Continue with Google
-          </Button>
-          <Link to={"/SignUp_Mobile"}>
-            <Button
-              startIcon={<FaMobileAlt style={{ color: "grey" }} />}
-              variant="outlined"
-              className="flex items-center justify-center w-full"
-              style={{ color: "black", border: "1px solid lightgrey" }}
-            >
-              Continue with Mobile Number
-            </Button>
-          </Link>
-        </div>
-        {error && <p className="text-red-500 mb-2">{error}</p>}
-        {success && <p className="text-green-500 mb-2">{success}</p>}
+        <div className="flex flex-col space-y-3 mb-0">
+      <Button
+        variant="outlined"
+        className="flex items-center justify-center w-full text-sm lowercase"
+        startIcon={<FcGoogle />}
+        style={{ color: 'black', border: '1px solid lightgrey', textTransform: 'none' }}
+      >
+        Continue with google
+      </Button>
+      <Link to={"/SignUp_Mobile"}>
+      <Button
+        variant="outlined"
+        className="flex items-center justify-center w-full text-sm lowercase"
+        startIcon={<FaMobileAlt style={{ color: "grey" }} />}
+        style={{ color: 'black', border: '1px solid lightgrey', textTransform: 'none' }}
+      >
+        Continue with mobile number
+      </Button>
+      </Link>
+    </div>
+        {error && <p className="text-red-500 text-base text-base">{error}</p>}
+        {success && <p className="text-green-500 text-base">{success}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-1">
             <label
@@ -327,14 +330,14 @@ const SignUp = () => {
         { !isVerified ? 
         <button
           onClick={sendOtp}
-          className={`absolute inset-y-0 right-0 px-4 flex items-center border-l border-gray-300 opacity-50 ${
+          className={`absolute inset-y-0 right-0 px-4 flex items-center border-l border-gray-300  ${
             formData.email && !otpSent && 'opacity-100'
           }`}
           disabled={!formData.email || otpSent}
         >
           Send OTP
         </button> : <div
-          className={`absolute text-green-500 inset-y-0 right-0 px-4 flex items-center border-l border-gray-300 opacity-50`}
+          className={`absolute text-green-600 inset-y-0 right-0 px-4 flex items-center border-l border-gray-300 opacity-80`}
           disabled={!formData.email || otpSent}
         >
           Verified
@@ -373,7 +376,7 @@ const SignUp = () => {
             </div>
             <button
               onClick={verifyOtp}
-              className={`absolute inset-y-0 right-0 px-8 flex items-center  border-gray-300 opacity-5`}
+              className={`absolute inset-y-0 right-0 px-8 flex items-center  border-gray-300 opacity-70`}
               disabled={!otp || isVerified}
             >
                Verify
@@ -384,7 +387,7 @@ const SignUp = () => {
     </div>
           <div className="mb-2">
             <label
-              className="block text-left text-gray-700 mb-2"
+              className="block text-left text-gray-700 mb-1"
               htmlFor="password"
             >
               Password
@@ -417,7 +420,7 @@ const SignUp = () => {
                 required
               />
             </div>
-            <div className="mt-2 flex flex-column">
+            <div className="mt-1 mb-0 flex flex-column">
               <FormControlLabel
                 control={
                   <Checkbox
@@ -456,7 +459,7 @@ const SignUp = () => {
               />
             </div>
           </div>
-          <div className="mb-2">
+          <div className="mb-1">
             <label
               className="block text-left text-gray-700 mb-2"
               htmlFor="confirmPassword"
@@ -499,6 +502,19 @@ const SignUp = () => {
               />
             </div>
           </div>
+          <div className="block text-left text-gray-700 mb-2">
+      <FormControlLabel
+        control={<Checkbox required />}
+        label={
+          <span>
+            By connecting, you agree to our{' '}
+            <a href="#" className="text-blue-500 hover:underline">
+              Terms and Conditions
+            </a>
+          </span>
+        }
+      />
+    </div>
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-600 transition mb-2 duration-200"
