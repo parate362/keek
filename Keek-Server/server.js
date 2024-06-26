@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://keek-nine.vercel.app"], // Add your new origin here
+    origin: ["http://localhost:3000", "https://keek-ten.vercel.app"], // Add your new origin here
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     preflightContinue: false,
