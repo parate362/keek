@@ -97,7 +97,7 @@ const SignUp = () => {
 
   const sendOtp = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/user/send-otp`, {
+      const response = await fetch(`https://keek-ten.vercel.app/api/user/send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ const SignUp = () => {
   const verifyOtp = async () => {
    
     try {
-      const response = await fetch(`http://localhost:8080/api/user/verify-email`, {
+      const response = await fetch(`https://keek-ten.vercel.app/api/user/verify-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -209,7 +209,7 @@ const SignUp = () => {
     // updatedFormData.isSubmitting = true; 
     // setFormData(updatedFormData);
     
-    axios.post("http://localhost:8080/api/user/register-email", formData)
+    axios.post("https://keek-ten.vercel.app/api/user/register-email", formData)
       .then((response) => {
         setSuccess('Sign up successful!');
         setError('');
