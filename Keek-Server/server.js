@@ -13,7 +13,6 @@ app.use(
     origin: ["http://localhost:3000", "https://keek-nine.vercel.app"], // Add your new origin here
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
-    allowedHeaders: 'Content-Type,Authorization',
     preflightContinue: false,
     optionsSuccessStatus: 204
   })
