@@ -1,25 +1,30 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LoginCarousel from './LoginSignUpPage/LoginCarousel/LoginCarousel';
-import { FaMobileAlt , FaUser } from "react-icons/fa";
+import { FaMobileAlt, FaUser } from "react-icons/fa";
 import { IoEyeOutline } from "react-icons/io5";
 import { BsEyeSlash } from "react-icons/bs";
 import { FiKey } from "react-icons/fi"; 
 
 const SignUpMobile = () => {
   const [mobileNumber, setMobileNumber] = useState("");
+  const [name, setName] = useState("");
   const [otp, setOtp] = useState(""); 
+  const navigate = useNavigate()
   const [showOtp, setShowOtp] = useState(false); 
   const [otpSent, setOtpSent] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isVerified, setIsVerified] = useState(false);
 
-
-  const handleInputChange = (event) => {
+  const handleMobileInputChange = (event) => {
     const { value } = event.target;
     const numericValue = value.replace(/[^0-9]/g, '');
     setMobileNumber(numericValue);
+  };
+
+  const handleNameInputChange = (event) => {
+    setName(event.target.value);
   };
 
   const handleOtpChange = (event) => {
@@ -39,7 +44,7 @@ const SignUpMobile = () => {
       const data = await response.json();
       if (response.ok) {
         setOtpSent(true);
-        alert(`OTP sent to ${mobileNumber} please check and verify your mobile Number`);
+        alert(`OTP sent to your mobile number. Please check and verify your mobile number.`);
       } else {
         setError(data.message);
       }
@@ -48,16 +53,14 @@ const SignUpMobile = () => {
     }
   };
 
-
   const verifyOtp = async () => {
-   
     try {
       const response = await fetch(`https://keek-server.vercel.app/api/user/verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ mobileNumber, otp,  }),
+        body: JSON.stringify({ mobileNumber, otp }),
       });
   
       const data = await response.json();
@@ -71,27 +74,34 @@ const SignUpMobile = () => {
       setError('Error verifying OTP');
     }
   };
-  // const sendOtp = () => {
-    
-  //   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  //   console.log("Generated OTP:", otp);
-  //   setGeneratedOtp(otp);
-  //   setOtpSent(true); 
-  //   alert(`OTP sent to ${mobileNumber}: ${otp}`);
-  // };
 
-  // const verifyOtp = () => {
-  //   return otp === generatedOtp;
-  // };
-
-  const handleLogin = () => {
-    if (verifyOtp()) {
-      alert("Login successful!"); 
-      setMobileNumber(""); 
-      setOtp(""); 
-      setOtpSent(false); 
+  const handleLogin = async () => {
+    if (isVerified) {
+      try {
+        const response = await fetch("https://keek-server.vercel.app/api/user/register-mobile", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name, mobileNumber }),
+        });
+  
+        if (response.ok) {
+          setSuccess('Sign up successful!');
+          setError('');
+          navigate("/");
+          setTimeout(() => {
+            setSuccess("");
+          }, 2000);
+        } else {
+          const data = await response.json();
+          setError(data.message);
+        }
+      } catch (err) {
+        setError('Sign up failed. Please try again.');
+      }
     } else {
-      alert("Incorrect OTP. Please try again.");
+      alert("Please verify OTP first.");
     }
   };
 
@@ -122,11 +132,13 @@ const SignUpMobile = () => {
               <input
                 className="w-full pl-2 pr-4 py-2 border rounded-lg"
                 type="text"
+                value={name}
+                onChange={handleNameInputChange}
                 placeholder="Enter Your Name"
                 maxLength={35} 
               />
               {/* <div className="absolute inset-y-0 left-0  flex items-center pointer-events-none">
-              <FaUser className="inline-block mx-2 text-lg opacity-50" />
+                <FaUser className="inline-block mx-2 text-lg opacity-50" />
               </div> */}
             </div>
            <div>Mob. Number</div>
@@ -136,7 +148,7 @@ const SignUpMobile = () => {
                 type="text"
                 inputMode="numeric"
                 value={mobileNumber}
-                onChange={handleInputChange}
+                onChange={handleMobileInputChange}
                 placeholder="1234567890"
                 maxLength={10} 
               />

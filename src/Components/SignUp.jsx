@@ -195,36 +195,33 @@ const SignUp = () => {
       return;
     }
 
-    // if (!isVerified) {
-    //   setError("Please verify OTP first.");
-    //   setSuccess("");
+    if (!isVerified) {
+      setError("Please verify OTP first.");
+      setSuccess("");
 
-    //   setTimeout(() => {
-    //     setError("");
-    //   }, 2000);
+      setTimeout(() => {
+        setError("");
+      }, 2000);
 
-    //   return;
-    // }
-    const updatedFormData = { ...formData };
-    updatedFormData.isSubmitting = true; 
-    setFormData(updatedFormData);
+      return;
+    }
+    // const updatedFormData = { ...formData };
+    // updatedFormData.isSubmitting = true; 
+    // setFormData(updatedFormData);
     
-  
-      axios.post("http://localhost:8080/api/user/register-email", formData )
-        .then((formData) => {
-          setSuccess('Sign up successful!');
-          setError('');
-          navigate("/");
-          setTimeout(() => {
-            setSuccess("");
-          }, 2000);
-        
-        }
-      )
-        .catch((err) => {
-          setError('Sign up failed. Please try again.');
-          console.log(err);
-        });
+    axios.post("https://keek-server.vercel.app/api/user/register-email", formData)
+      .then((response) => {
+        setSuccess('Sign up successful!');
+        setError('');
+        navigate("/");
+        setTimeout(() => {
+          setSuccess("");
+        }, 2000);
+      })
+      .catch((err) => {
+        setError('Sign up failed. Please try again.');
+        console.log(err);
+      });
      
 
   setFormData({

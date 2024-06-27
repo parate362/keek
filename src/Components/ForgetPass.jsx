@@ -50,15 +50,15 @@ const ForgetPass = () => {
             <div>Email</div>
             <div className="relative">
               <input
-                className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                className="w-full pl-2 pr-4 py-2 border rounded-lg"
                 type="text"
                 placeholder="john.doe@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <CiMail className="inline-block text-xl opacity-75" />
-              </div>
+              </div> */}
             </div>
             {!otpSent ? (
               <button
@@ -71,11 +71,11 @@ const ForgetPass = () => {
               <>
                 <div>Enter OTP</div>
                 <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FiKey className="rotate-90 opacity-50" />
-            </div>
+            </div> */}
                   <input
-                    className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                    className="w-full pl-2 pr-4 py-2 border rounded-lg"
                     type={showOtp ? "text" : "password"} 
                     placeholder="Enter OTP"
                     value={otp}
