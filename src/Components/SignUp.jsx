@@ -294,13 +294,13 @@ const SignUp = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FaUser />
-                    </InputAdornment>
-                  ),
-                }}
+                // InputProps={{
+                //   startAdornment: (
+                //     <InputAdornment position="start">
+                //       <FaUser />
+                //     </InputAdornment>
+                //   ),
+                // }}
                 required
               />
             </div>
@@ -320,13 +320,13 @@ const SignUp = () => {
           fullWidth
           value={formData.email}
           onChange={handleEmailChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <FaEnvelope />
-              </InputAdornment>
-            ),
-          }}
+          // InputProps={{
+          //   startAdornment: (
+          //     <InputAdornment position="start">
+          //       <FaEnvelope />
+          //     </InputAdornment>
+          //   ),
+          // }}
           required
           disabled={otpSent}
         />
@@ -362,9 +362,9 @@ const SignUp = () => {
               onChange={handleOtpChange}
               // disabled={!otpSent}
             />
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FiKey className="rotate-90 opacity-50" />
-            </div>
+            </div> */}
             <div
               onClick={() => {
                 setShowOtp(!showOtp);
@@ -407,11 +407,11 @@ const SignUp = () => {
                 value={formData.password}
                 onChange={handlePasswordChange}
                 InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FaLock />
-                    </InputAdornment>
-                  ),
+                  // startAdornment: (
+                  //   <InputAdornment position="start">
+                  //     <FaLock />
+                  //   </InputAdornment>
+                  // ),
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={handleClickShowPassword} edge="end">
@@ -481,11 +481,11 @@ const SignUp = () => {
                 value={formData.confirmPassword}
                 onChange={handleConfirmPasswordChange}
                 InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FaLock />
-                    </InputAdornment>
-                  ),
+                  // startAdornment: (
+                  //   <InputAdornment position="start">
+                  //     <FaLock />
+                  //   </InputAdornment>
+                  // ),
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton

@@ -120,19 +120,19 @@ const SignUpMobile = () => {
           <div>Name</div>
             <div className="relative mb-3">
               <input
-                className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                className="w-full pl-2 pr-4 py-2 border rounded-lg"
                 type="text"
                 placeholder="Enter Your Name"
                 maxLength={35} 
               />
-              <div className="absolute inset-y-0 left-0  flex items-center pointer-events-none">
+              {/* <div className="absolute inset-y-0 left-0  flex items-center pointer-events-none">
               <FaUser className="inline-block mx-2 text-lg opacity-50" />
-              </div>
+              </div> */}
             </div>
            <div>Mob. Number</div>
             <div className="relative mb-3">
               <input
-                className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                className="w-full pl-2 pr-4 py-2 border rounded-lg"
                 type="text"
                 inputMode="numeric"
                 value={mobileNumber}
@@ -140,9 +140,9 @@ const SignUpMobile = () => {
                 placeholder="1234567890"
                 maxLength={10} 
               />
-              <div className="absolute inset-y-0 left-0  flex items-center pointer-events-none">
+              {/* <div className="absolute inset-y-0 left-0  flex items-center pointer-events-none">
                 <FaMobileAlt className="inline-block mx-2 text-lg opacity-50" />
-              </div>
+              </div> */}
               <button
                 onClick={sendOtp}
                 className="absolute inset-y-0 right-0 px-4 flex items-center border-l border-gray-300"
@@ -156,16 +156,16 @@ const SignUpMobile = () => {
               <div>Verify OTP</div>
               <div className="relative">
                 <input
-                  className="border rounded-md pl-10 w-full py-2"
+                  className="border rounded-md pl-2 w-full py-2"
                   type={`${showOtp ? "text" : "password"}`}
                   placeholder="Enter OTP"
                   value={otp}
                   onChange={handleOtpChange}
                   disabled={!otpSent} 
                 />
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FiKey className="rotate-90 opacity-50" />
-                </div>
+                </div> */}
                 <div
                   onClick={() => {
                     setShowOtp(!showOtp);

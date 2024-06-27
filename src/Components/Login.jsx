@@ -72,16 +72,7 @@ const Login = () => {
           </h1>
           <h2 className="mt-4 font-bold">Welcome Back!</h2>
           <h2 className="opacity-75 mb-4">Please enter your credentials</h2>
-          {/* <button className="w-full border rounded-md my-2 py-2 active:bg-blue-600 active:text-white">
-            <FcGoogle className="inline-block text-[20px]" /> Continue with
-            google
-          </button>
-          <Link to="/Login_Mobile">
-            <button className="w-full border rounded-md my-2 py-2 active:bg-blue-600 active:text-white">
-              <FaMobileAlt className="inline-block mx-2 text-lg opacity-50" />
-              Continue with mobile number
-            </button>
-          </Link> */}
+        
          <div className="flex flex-col space-y-4 mb-1">
       <Button
         variant="outlined"
@@ -91,7 +82,7 @@ const Login = () => {
       >
         Continue with google
       </Button>
-      <Link to={"/SignUp_Mobile"}>
+      <Link to={"/Login_Mobile"}>
       <Button
         variant="outlined"
         className="flex items-center justify-center w-full text-sm lowercase"
@@ -111,30 +102,30 @@ const Login = () => {
             <div>Email</div>
             <div className="relative">
               <input
-                className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                className="w-full left-0 pl-2 pr-4 py-2 border rounded-lg"
                 type="text"
                 placeholder="john.doe@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <CiMail className="inline-block text-xl opacity-75" />
-              </div>
+              </div> */}  
             </div>
           </div>
           <div className="my-2">
             <div>Password</div>
             <div className="relative">
               <input
-                className="border rounded-md pl-10 w-full py-2"
+                className="border rounded-md pl-2 w-full py-2"
                 type={`${shoPass ? "text" : "password"}`}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Key className="rotate-90 opacity-50" />
-              </div>
+              </div> */}
               <div
                 onClick={() => {
                   setShowPass(!shoPass);

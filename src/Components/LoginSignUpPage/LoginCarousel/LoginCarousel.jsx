@@ -30,12 +30,14 @@ export default function LoginCarousel({ slides ,
         })}
       </div>
 
-      <div className="absolute top-3/4 py-4 w-2/4 h-28 left-1/4">
-    <p class="text-black font-inter text-2xl font-medium">
+      <div className="absolute top-3/4 py-2 px-4 w-2/4 h-28 left-1/4 bg-gray-300 bg-opacity-50 backdrop-filter backdrop-blur-lg rounded-lg">
+    <p className="text-black font-inter text-2xl font-medium">
         Hire your favourite influencers from trending social media platforms easily with
-        <span class="text-blue-600 font-inter font-semibold"> keek.</span>
+        <span className="text-blue-600 font-inter font-bold"> keek.</span>
     </p>
 </div>
+
+
 
       <div className="absolute bottom-0 py-4 flex justify-center gap-3 w-full">
         {slides.map((s, i) => {
