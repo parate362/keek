@@ -83,7 +83,7 @@ const LoginMobile = () => {
               />
               {/* <div className="absolute inset-y-0 left-0  flex items-center pointer-events-none">
                 <FaMobileAlt className="inline-block mx-2 text-lg opacity-50" />
-              </div> */}
+              </div> / */}
               <button
                 onClick={sendOtp}
                 className="absolute inset-y-0 right-0 px-4 flex items-center border-l border-gray-300"

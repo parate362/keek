@@ -138,7 +138,7 @@ const SignUpMobile = () => {
                 maxLength={35} 
               />
               {/* <div className="absolute inset-y-0 left-0  flex items-center pointer-events-none">
-                <FaUser className="inline-block mx-2 text-lg opacity-50" />
+           /     <FaUser className="inline-block mx-2 text-lg opacity-50" />
               </div> */}
             </div>
            <div>Mob. Number</div>

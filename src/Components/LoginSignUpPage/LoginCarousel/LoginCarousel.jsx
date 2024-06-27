@@ -33,7 +33,7 @@ export default function LoginCarousel({ slides ,
       <div className="absolute top-3/4 py-2 px-4 w-2/4 h-28 left-1/4 bg-gray-300 bg-opacity-50 backdrop-filter backdrop-blur-lg rounded-lg">
     <p className="text-black font-inter text-2xl font-medium">
         Hire your favourite influencers from trending social media platforms easily with
-        <span className="text-blue-600 font-inter font-bold"> keek.</span>
+        <span className="text-blue-600 font-inter  font-bold"> keek.</span>
     </p>
 </div>
 

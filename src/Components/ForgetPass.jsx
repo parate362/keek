@@ -56,8 +56,8 @@ const ForgetPass = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <CiMail className="inline-block text-xl opacity-75" />
+              {/*  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <CiMail className="inline-block text-xl  opacity-75" />
               </div> */}
             </div>
             {!otpSent ? (

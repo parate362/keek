@@ -483,6 +483,7 @@ const SignUp = () => {
                   //     <FaLock />
                   //   </InputAdornment>
                   // ),
+                  //
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
