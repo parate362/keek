@@ -8,15 +8,17 @@ const app = express();
 
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "https://keek-ten.vercel.app"], // Add your new origin here
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204
-  })
-);
+const allowedOrigins = ['https://keek-ten.vercel.app'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 
 app.get("/", (req, res) => {
   res.send("Hello Keek!");
